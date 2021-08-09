@@ -1,28 +1,55 @@
 package dashy;
 
+import java.awt.event.KeyEvent;
+
 import javax.swing.JFrame;
 
 import util.Time;
 
 public class Window extends JFrame implements Runnable{
 	
+	public MListener mouseListener;
+	public KListener keyListener;
 	private static Window window = null;
 	private boolean isRunning = true;
+	private Scene currentScene = null;
 	static final int SCREEN_WIDTH = 1280;
 	static final int SCREEN_HEIGHT = 720;
 	
 	public Window()
 	{
+		this.mouseListener = new MListener();
+		this.keyListener = new KListener();
 		this.setSize(SCREEN_WIDTH,SCREEN_HEIGHT);
 		this.setTitle("Geometry Dash");
 		this.setResizable(false);
 		this.setVisible(true);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.addKeyListener(keyListener);
+		this.addMouseListener(mouseListener);
+		this.addMouseMotionListener(mouseListener);
 		this.setLocationRelativeTo(null);
 	}
 	
 	public void init()
 	{
+		changeScene(0);
+	}
+	
+	public void changeScene(int scene)
+	{
+		switch(scene)
+		{
+		case 0:
+			currentScene = new LevelEditorScene("Level Editor");
+			break;
+		default:
+			System.out.println("Do not know where this scene is");
+			currentScene = null;
+			break;
+		
+		
+		}
 		
 	}
 	
@@ -38,7 +65,8 @@ public class Window extends JFrame implements Runnable{
 	
 	public void update(double deltatime)
 	{
-		System.out.println(deltatime);
+		currentScene.update(deltatime);
+		
 	}
 	
 	@Override
@@ -53,7 +81,7 @@ public class Window extends JFrame implements Runnable{
 				double deltaTime = time - lastFrameTime;
 				lastFrameTime = time;
 				
-				update(time);
+				update(deltaTime);
 			}
 			
 		}catch(Exception e)
