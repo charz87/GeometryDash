@@ -1,9 +1,9 @@
 package dashy;
 
-import java.awt.event.KeyEvent;
-
+import java.awt.*;
 import javax.swing.JFrame;
 
+import util.Constants;
 import util.Time;
 
 public class Window extends JFrame implements Runnable{
@@ -13,15 +13,15 @@ public class Window extends JFrame implements Runnable{
 	private static Window window = null;
 	private boolean isRunning = true;
 	private Scene currentScene = null;
-	static final int SCREEN_WIDTH = 1280;
-	static final int SCREEN_HEIGHT = 720;
+	private Image doubleBufferImage = null;
+	private Graphics doubleBufferGraphics = null;
 	
 	public Window()
 	{
 		this.mouseListener = new MListener();
 		this.keyListener = new KListener();
-		this.setSize(SCREEN_WIDTH,SCREEN_HEIGHT);
-		this.setTitle("Geometry Dash");
+		this.setSize(Constants.SCREEN_WIDTH,Constants.SCREEN_HEIGHT);
+		this.setTitle(Constants.SCREEN_TITLE);
 		this.setResizable(false);
 		this.setVisible(true);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -66,7 +66,27 @@ public class Window extends JFrame implements Runnable{
 	public void update(double deltatime)
 	{
 		currentScene.update(deltatime);
+		draw(getGraphics());
 		
+	}
+	
+	public void draw(Graphics g)
+	{
+		if(doubleBufferImage == null)
+		{
+			doubleBufferImage = createImage(getWidth(), getHeight());
+			doubleBufferGraphics = doubleBufferImage.getGraphics();
+		}
+		
+		renderOffscreen(doubleBufferGraphics);
+		
+		g.drawImage(doubleBufferImage,0,0,getWidth(),getHeight(),null);
+	}
+	
+	public void renderOffscreen(Graphics g)
+	{
+		Graphics2D g2D = (Graphics2D)g;
+		currentScene.draw(g2D);
 	}
 	
 	@Override

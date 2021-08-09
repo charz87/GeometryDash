@@ -1,6 +1,8 @@
 package dashy;
 
-import java.awt.Graphics2D;
+import java.awt.*;
+
+import util.Constants;
 
 public class LevelEditorScene extends Scene {
 	
@@ -24,8 +26,10 @@ public class LevelEditorScene extends Scene {
 	}
 
 	@Override
-	public void draw(Graphics2D g2d) {
+	public void draw(Graphics2D g2D) {
 		// TODO Auto-generated method stub
+		g2D.setColor(Color.BLUE);
+		g2D.fillRect(0, 0, Constants.SCREEN_WIDTH, Constants.SCREEN_HEIGHT);
 		
 	}
 
